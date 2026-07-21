@@ -285,6 +285,8 @@ const NTFY = "https://ntfy.sh";
 const TOPIC = "rt-garrett-round-c489f3e9bd";
 const DISPATCH = "rt-garrett-round-noop-c489f3e9bd";   // dead channel: nothing listens
 const LS_KEY = "rt_garrett_round_v1";
+/* Eric-only alert channel: fires when a save cannot reach the sheet. */
+const SAVE_ALERT = "hb-buddy-save-fail-7aaa0caf";
 const EMAIL = "glovoy22@gmail.com";
 /* Garrett's Golf Tracker 2026 intake (doPost appends to his Rounds tab) */
 const SHEET_HOOK = "https://script.google.com/macros/s/AKfycbxvJtmEqGijjff3QyzaTqWDD22oZXGL1Wq9vAYGGXlTxxHbmn5g9HqCNFJWCCE0PK4u/exec";
@@ -820,7 +822,16 @@ async function saveRound(){
         body: JSON.stringify(body) });
       const j = await resp.json();
       if (!j.ok) throw new Error(j.error || "sheet said not-ok");
-    } catch(e){ console.warn("sheet hook:", e); }
+    } catch(e){
+      console.warn("sheet hook:", e);
+      /* Eric asked to hear about saves ONLY when they fail — a silent pipeline
+         means it is working. No server: just a marker on a topic he subscribes to. */
+      try {
+        await fetch(`${NTFY}/${SAVE_ALERT}`, { method:"POST",
+          headers:{ "Title": "Golf save failed", "Priority": "high" },
+          body: `${LS_KEY}: round did not reach the sheet — ${String(e).slice(0,120)}` });
+      } catch(_){}
+    }
     sent = true;
   } catch(e){}
   let copied = false;
