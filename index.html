@@ -578,8 +578,9 @@ body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream
     '</a>';
   }).join('');
 
-  var numOrNull = function(s){ var v=String(s).trim(); if(v==='') return null;
-    var n=Math.round(+v); return isFinite(n) ? Math.max(0, Math.min(700, n)) : null; };
+  /* same definition the Hub putting code was written against — parseFloat, so a
+     12.5 ft putt interpolates instead of snapping to 13 */
+  function numOrNull(v){ var n = parseFloat(v); return isFinite(n) ? n : null; }
 
   // ---- Putting — green-reading charts from Eric's Green Break Chart PDF
   // (read to pin, inches, per stimp 8-12; rows = side slope %, cols = putt feet).
