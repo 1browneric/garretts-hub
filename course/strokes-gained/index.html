@@ -12,7 +12,7 @@
 :root{
   --green:#00432E; --green2:#0A5236; --green3:#116245;
   --paper:#F7F4EA; --paper2:#ECE6D5;
-  --red:#A31621; --red2:#C22B33;
+  --red:#B22234; --red2:#8F1B2A;
   --gold:#C2A14D; --gold-deep:#94742B;
   --sage:#9FC4B4; --line:rgba(255,255,255,.13);
   --serif:'Libre Baskerville',Georgia,serif;
@@ -31,7 +31,6 @@ input,textarea,select{font-family:inherit}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 
 .masthead{padding:22px 18px 16px;text-align:center;border-bottom:1px solid var(--line)}
-.crest{font-family:var(--mono);font-size:9px;letter-spacing:.42em;color:var(--gold);text-transform:uppercase;margin-bottom:7px}
 .wordmark{font-family:var(--serif);font-weight:700;font-size:25px;line-height:1.1;letter-spacing:.01em;color:var(--paper);margin:0 0 6px}
 .wordmark em{font-style:italic;color:var(--gold)}
 .rule{width:46px;height:2px;background:var(--gold);margin:0 auto 10px;opacity:.8}
@@ -67,13 +66,13 @@ input,textarea,select{font-family:inherit}
   font-size:22px;font-weight:600;display:flex;align-items:center;justify-content:center}
 .stepbtn:active{transform:scale(.95)}
 .gross{width:52px;text-align:center;font-family:var(--mono);font-weight:700;font-size:28px;color:var(--ink2)}
-.gross.blank{color:#AAB6AE}.gross.birdie{color:#94742B}.gross.over{color:#A31621}
+.gross.blank{color:#AAB6AE}.gross.birdie{color:#1E8E4F}.gross.over{color:#B22234}
 
 .statgrid{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid rgba(8,50,36,.12);flex-wrap:wrap}
 .stchip{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
   padding:9px 14px;border-radius:999px;border:1.5px solid rgba(8,50,36,.3);color:var(--mut)}
 .stchip.yes{background:var(--ink);border-color:var(--ink);color:var(--gold);font-weight:700}
-.stchip.no{border-color:rgba(163,22,33,.55);color:#A31621;font-weight:700}
+.stchip.no{border-color:rgba(178,34,52,.55);color:#B22234;font-weight:700}
 .minstep{display:flex;align-items:center;gap:7px;margin-left:auto}
 .minstep .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
 .stmini{width:36px;height:36px;border-radius:9px;background:#E7E0CE;color:var(--ink);font-size:17px;
@@ -97,10 +96,10 @@ input,textarea,select{font-family:inherit}
 .shotrow .n{font-family:var(--serif);font-size:13px;color:var(--mut2);width:16px}
 .shotrow .d{flex:1;line-height:1.5}
 .shotrow .d b{color:var(--ink)}
-.shotrow .d .acc-bad{color:#A31621;font-weight:700}
+.shotrow .d .acc-bad{color:#B22234;font-weight:700}
 .shotbtn{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
   padding:7px 10px;border-radius:8px;background:#E7E0CE;color:var(--ink)}
-.shotbtn.del{color:#A31621;background:none;border:1px solid rgba(163,22,33,.35)}
+.shotbtn.del{color:#B22234;background:none;border:1px solid rgba(178,34,52,.35)}
 .addshot{display:block;width:calc(100% - 8px);margin:8px 4px 2px;padding:11px;border:1.5px dashed rgba(8,50,36,.35);
   border-radius:10px;font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink);font-weight:700}
 
@@ -157,9 +156,9 @@ input,textarea,select{font-family:inherit}
 .grid td.hn{font-weight:700;color:var(--ink)}
 .grid tr.sumrow td{border-top:2px solid var(--ink);font-weight:700;color:var(--ink)}
 .sc{font-weight:700}
-.sc.bird{color:#94742B}.sc.bog{color:#A31621}
+.sc.bird{color:#1E8E4F}.sc.bog{color:#B22234}
 .ok{color:var(--ink);font-weight:700}
-.miss{color:#A31621}
+.miss{color:#B22234}
 
 .rnotes{margin-top:16px}
 .rnotes textarea{width:100%;min-height:64px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;
@@ -205,7 +204,7 @@ input,textarea,select{font-family:inherit}
 .confirmrow{padding:10px 14px 4px}
 .confirmscore{width:100%;padding:12px;border-radius:11px;background:var(--ink);color:var(--gold);
   font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700}
-.confirmscore.warn{background:#fff;color:#A31621;border:1.5px solid rgba(163,22,33,.5)}
+.confirmscore.warn{background:#fff;color:#B22234;border:1.5px solid rgba(178,34,52,.5)}
 .confirmscore b{font-size:13px}
 .confirmok{text-align:center;font-family:var(--mono);font-size:10.5px;color:var(--mut);padding:4px}
 
@@ -221,7 +220,7 @@ input,textarea,select{font-family:inherit}
 .chart td{padding:7px 4px;text-align:center;border-bottom:1px solid rgba(8,50,36,.1)}
 .chart td.cl{text-align:left;font-weight:700;color:var(--ink)}
 .chart td.mut{color:var(--mut2)}
-.chart .par{color:#A31621;font-size:11px}
+.chart .par{color:#B22234;font-size:11px}
 .chart td.cl .bagn{font-family:'Barlow',sans-serif;font-weight:700;color:var(--ink)}
 .chart td.cl .bags{font-family:'Barlow',sans-serif;font-weight:500;font-size:10px;color:var(--mut2);margin-left:6px;letter-spacing:0}
 .chartnote{font-family:var(--mono);font-size:10px;color:var(--mut);line-height:1.6;padding:9px 2px 0;text-align:center}
@@ -234,7 +233,6 @@ input,textarea,select{font-family:inherit}
 <body>
 <div class="app">
   <header class="masthead">
-    <div class="crest">Garrett's Hub</div>
     <h1 class="wordmark">Strokes Gained <em>Round Tracker</em></h1>
     <div class="rule"></div>
     <div class="metain">
@@ -602,15 +600,12 @@ function mailtoFor(data){
     `Strokes Gained Round Tracker - ${data.round.course} ${data.round.date}`)}&body=${encodeURIComponent(breakdownText(data))}`;
 }
 function saveOutHTML(sent, copied, data){
-  const bits = [];
-  bits.push(sent ? "Round sent to your Golf Tracker sheet."
-                 : "Channel unreachable — use the JSON below.");
-  bits.push("Your mail app should open with the full shot-by-shot breakdown — just hit Send.");
-  bits.push(copied ? "Full JSON also copied to clipboard." : "Copy the JSON below.");
+  /* one line only — success says so and stops; failure shows the JSON fallback */
+  const msg = sent ? "Round sent to your sheet." : "Could not reach the sheet — copy the JSON below.";
   const mailto = data ? mailtoFor(data) : "";
-  return `<div class="msg">${bits.join("<br>")}</div>
+  return `<div class="msg">${msg}</div>
     ${mailto ? `<a class="mailbtn" href="${mailto}">Email me a copy</a>` : ""}
-    <textarea readonly onclick="this.select()">${lastExport ? lastExport.replace(/&/g,"&amp;").replace(/</g,"&lt;") : ""}</textarea>`;
+    ${sent ? "" : `<textarea readonly onclick="this.select()">${lastExport ? lastExport.replace(/&/g,"&amp;").replace(/</g,"&lt;") : ""}</textarea>`}`;
 }
 
 /* ---------- caddy engine ---------- */
@@ -704,7 +699,7 @@ function render(){
   main.innerHTML = tab==="hole" ? viewHole() : viewOverview();
   bind();
   const st = $("#savestat");
-  st.textContent = mode==="live" ? "Live sync" : mode==="offline" ? "Offline — saved on device" : "Connecting";
+  st.textContent = mode==="live" ? "Live sync" : mode==="offline" ? "Offline" : "Connecting";
   st.classList.toggle("live", mode==="live");
 }
 function syncMeta(){
@@ -882,8 +877,7 @@ function caddyDistChart(){
     const nm = `<span class="bagn">${b.name}</span>${b.spec?`<span class="bags">${b.spec}</span>`:""}`;
     return `<tr><td class="cl">${nm}</td><td>${CADDY[c].c[0]}</td><td class="mut">${CADDY[c].c[1]}</td></tr>`;
   }).join("");
-  return `<table class="chart"><thead><tr><th>Club</th><th>Carry</th><th>Total</th></tr></thead><tbody>${rows}</tbody></table>
-  <div class="chartnote">Mirrors the Charleston National caddie bag.</div>`;
+  return `<table class="chart"><thead><tr><th>Club</th><th>Carry</th><th>Total</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 const drift = n => n === 0 ? "&mdash;" : (n > 0 ? `${n}R` : `${-n}L`);
 function caddyWindChart(){

@@ -99,6 +99,29 @@ body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream
 /* SG rows */
 .sghead{display:flex;align-items:baseline;justify-content:space-between;margin:24px 2px 12px}
 .pos{color:var(--green-pos)} .neg{color:var(--neg)}
+/* caddie tools */
+.cadrow{display:flex;gap:8px;margin-top:8px}
+.cadf{flex:1;min-width:0}
+.cadf label{display:block;font-family:var(--font-caps);font-weight:600;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--sage);margin-bottom:5px}
+.cadf input,.cadf select{width:100%;height:44px;padding:0 10px;border:1px solid rgba(143,175,157,.35);border-radius:10px;
+  background:var(--green-deep);color:var(--cream);font-family:var(--font-data);font-size:14px;font-weight:600;
+  -webkit-appearance:none;appearance:none;text-align:center}
+.cadf select{text-align:left;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%238FAF9D'/></svg>");background-repeat:no-repeat;background-position:right 12px center;padding-right:26px}
+.cadf input:focus,.cadf select:focus{outline:2px solid var(--gold-deep)}
+.cadout{font-family:var(--font-data);font-size:13px;color:var(--cream);line-height:1.7;padding:12px 2px 0;text-align:center}
+.cadout:empty{display:none}
+.windsub{display:flex;gap:6px}
+.windbtn{flex:1;padding:9px 4px;border-radius:9px;border:1px solid rgba(143,175,157,.35);cursor:pointer;
+  font-family:var(--font-caps);font-weight:700;font-size:9.5px;letter-spacing:.08em;color:var(--sage);background:none}
+.windbtn.on{background:var(--gold);border-color:var(--gold);color:#00291C}
+.wchart{width:100%;border-collapse:collapse;font-family:var(--font-data);font-size:12.5px;color:var(--cream);margin-top:12px}
+.wchart th{font-family:var(--font-caps);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);font-weight:700;
+  padding:6px 4px;border-bottom:1px solid rgba(143,175,157,.4);text-align:center}
+.wchart th:first-child{text-align:left}
+.wchart td{padding:7px 4px;text-align:center;border-bottom:1px solid rgba(143,175,157,.14)}
+.wchart td.cl{text-align:left;font-family:var(--font-body);font-weight:600}
+.wchart td.mut{color:var(--sage)}
+.wchart .dr{color:var(--gold);font-size:11px}
 /* weather refresh button */
 .wxbtn{background:none;border:none;padding:3px;cursor:pointer;display:inline-flex;line-height:0}
 .wxbtn svg{width:15px;height:15px;stroke:var(--sage)}
@@ -141,6 +164,7 @@ body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream
           <div class="mleft">
             <div class="t">My Bag</div>
           </div>
+          <div class="mright"><img src="assets/taylormade-cream.png" alt="TaylorMade" style="height:17px;width:auto;display:block"></div>
         </div>
         <div class="mod" data-go="caddie">
           <div class="mleft">
@@ -148,7 +172,7 @@ body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream
           </div>
           <div class="mright">
             <div id="wx-tile-temp" class="mono" style="font-weight:600;font-size:24px;line-height:.9">—</div>
-            <div id="wx-tile-cond" class="lab" style="font-weight:600;font-size:8px;letter-spacing:.12em;margin-top:3px">CHARLESTON</div>
+            <div id="wx-tile-cond" class="lab" style="font-weight:600;font-size:8px;letter-spacing:.12em;margin-top:3px">—</div>
           </div>
         </div>
         <div class="mod" data-go="plan">
@@ -231,9 +255,9 @@ body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream
     <section class="screen" data-screen="club">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px">
         <div class="h-title" style="font-family:var(--font-script);font-weight:400;font-size:40px;line-height:1.05;color:#fff;margin-left:5px">My Bag</div>
+        <img src="assets/taylormade-white.png" alt="TaylorMade" style="height:15px;width:auto;margin-right:2px">
       </div>
-      <div style="font-size:12px;color:var(--sage);margin:8px 0 0 6px">Mirrors the Charleston National caddie bag.</div>
-      <div class="ctable" style="margin-top:14px">
+      <div class="ctable" style="margin-top:16px">
         <div class="chead">
           <span style="flex:2">CLUB</span>
           <span style="flex:1;text-align:right">CARRY</span>
@@ -245,8 +269,7 @@ body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream
 
     <!-- ============ CADDIE ============ -->
     <section class="screen" data-screen="caddie">
-      <div class="eyebrow">CHARLESTON</div>
-      <div class="h-title" style="font-size:32px;margin-top:6px">Caddie</div>
+      <div class="h-title" style="font-size:32px;margin-top:8px">Caddie</div>
 
       <!-- LIVE CHARLESTON WEATHER (Open-Meteo, refreshes on load) -->
       <div class="card" style="padding:0;margin-top:20px;overflow:hidden">
@@ -272,10 +295,26 @@ body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream
         </div>
       </div>
 
-      <!-- the live Swing Caddie (distance + wind -> club) lives in a round's Caddie tab -->
-      <div class="card" style="padding:22px;margin-top:14px;text-align:center">
+      <!-- Swing Caddie: distance + wind -> the club, same engine as the trackers -->
+      <div class="card" style="padding:18px;margin-top:14px">
         <div class="lab" style="font-weight:700;font-size:10px;letter-spacing:.16em">SWING CADDIE</div>
-        <div style="font-size:13px;color:var(--sage);line-height:1.55;margin-top:10px">Club, wind, and plays-like yardage for any shot live in the round's Caddie tab. Start a round to use it.</div>
+        <div class="cadrow" style="margin-top:12px">
+          <div class="cadf"><label>Distance (yd)</label><input type="number" inputmode="numeric" id="cad-dist"></div>
+          <div class="cadf"><label>No longer than</label><input type="number" inputmode="numeric" id="cad-cap"></div>
+        </div>
+        <div class="cadrow">
+          <div class="cadf"><label>Wind (mph)</label><input type="number" inputmode="numeric" id="cad-mph"></div>
+          <div class="cadf"><label>Direction</label><select id="cad-dir"></select></div>
+        </div>
+        <button class="btn btn-gold" id="cad-ask" style="width:100%;margin-top:12px;padding:13px;font-size:12px">SWING CADDIE</button>
+        <div id="cad-out" class="cadout"></div>
+      </div>
+
+      <!-- Wind charts: carry per club at 5/10/20 mph -->
+      <div class="card" style="padding:18px;margin-top:14px">
+        <div class="lab" style="font-weight:700;font-size:10px;letter-spacing:.16em">WIND CHARTS</div>
+        <div class="windsub" id="wind-tabs" style="margin-top:12px"></div>
+        <div id="wind-table"></div>
       </div>
     </section>
 
@@ -283,7 +322,6 @@ body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream
     <section class="screen" data-screen="plan">
       <div class="eyebrow">FOCUS AREAS</div>
       <div class="h-title" style="font-size:32px;margin-top:6px">Improvement Plan</div>
-      <div style="font-size:13px;color:var(--sage);margin-top:6px;line-height:1.5" id="plan-sub">General guidance until your rounds build a strokes-gained picture.</div>
       <div id="plan-list"></div>
     </section>
 
@@ -409,7 +447,7 @@ body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream
           '<span class="mono" style="font-weight:600;font-size:13px;color:var(--sage)">-</span></div>'+
           '<div class="sgbar"><div class="mid"></div></div>'+
         '</div>';
-      }).join('')+'<div style="font-size:11.5px;color:var(--sage);line-height:1.5;margin-top:4px">Strokes gained fills in once shot-by-shot rounds are logged.</div>';
+      }).join('');
     }
     return CATS.map(function(nm,i){
       var v=avg[i],pos=v>=0,half=Math.min(46,Math.abs(v)/4*46).toFixed(1);
@@ -424,7 +462,7 @@ body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream
   function chart(rounds){
     // last 5 rounds, oldest -> newest, gold bars rising off the par baseline
     var rs=rounds.slice(0,5).reverse();
-    if(!rs.length){el('chart-wrap').innerHTML='<div class="empty" style="margin-top:16px;border:none;padding:14px 4px 4px">Save a round at Charleston National and your scores land here automatically.</div>';return;}
+    if(!rs.length){el('chart-wrap').innerHTML='';return;}
     var w=320,bw=40,gap=(w-rs.length*bw)/(rs.length+1),base=92,maxOver=Math.max.apply(null,rs.map(function(r){return Math.max(1,r.score-r.par);}));
     var bars='',labels='',dates='';
     rs.forEach(function(r,i){
@@ -471,13 +509,12 @@ body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream
     el('sgbars-hub').innerHTML=el('sgbars-rounds').innerHTML=sgRows(sgAvg);
 
     el('latest-list').innerHTML=rounds.length?rounds.slice(0,3).map(card).join(''):
-      '<div class="empty">No rounds yet. Open the Round Tracker, play Charleston National, and hit Save — your round shows up here and on your sheet automatically.</div>';
+      '<div class="empty">No rounds yet.</div>';
     el('rounds-list').innerHTML=rounds.length?rounds.map(card).join(''):
-      '<div class="empty">Your saved rounds will list here, newest first.</div>';
+      '<div class="empty">No rounds yet.</div>';
 
     // improvement plan
     if(sgAvg){
-      el('plan-sub').textContent='Your strokes-gained categories vs a 5-handicap, ranked by biggest loss.';
       el('plan-list').innerHTML=CATS.map(function(nm,i){return [nm,sgAvg[i]];}).sort(function(a,b){return a[1]-b[1];}).map(function(a,i){
         var v=a[1],pos=v>=0,tag=(i===0?'BIGGEST LEAK':(pos?'STRENGTH':'FOCUS'));
         return '<div class="card" style="padding:16px 18px;margin-top:12px">'+
@@ -522,6 +559,122 @@ body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream
     '</a>';
   }).join('');
 
+  // ---- Swing Caddie + wind charts (same engine and numbers as the trackers) ----
+  var CODES=['D','MD','7w','3H','4i','5H','6i','7i','8i','9i','PW','48','52','56','58'];
+  var CODE_NAME={D:'Driver',MD:'Mini Driver','7w':'7 Wood','3H':'3 Hybrid','4i':'4 Iron','5H':'5 Hybrid',
+    '6i':'6 Iron','7i':'7 Iron','8i':'8 Iron','9i':'9 Iron',PW:'PW','48':'AW','52':'52°','56':'56°','58':'58°'};
+  var CADDY={
+    D:{c:[275,295],h:[[269,288],[262,279],[248,262]],t:[[281,302],[286,308],[294,318]],i:[[271,290],[266,284],[256,272]],d:[[279,300],[283,305],[288,311]],xl:[21,28,43],xr:[7,0,-14]},
+    MD:{c:[240,265],h:[[236,260],[230,253],[220,240]],t:[[244,270],[248,275],[256,285]],i:[[237,261],[233,256],[226,248]],d:[[243,269],[246,272],[251,279]],xl:[17,23,36],xr:[4.5,-2,-15]},
+    '7w':{c:[225,245],h:[[221,240],[215,233],[205,221]],t:[[229,250],[233,255],[241,264]],i:[[222,241],[218,237],[211,228]],d:[[228,249],[231,252],[236,258]],xl:[17,23,35],xr:[4,-2,-15]},
+    '3H':{c:[220,235],h:[[216,230],[210,223],[200,211]],t:[[224,240],[228,244],[236,254]],i:[[217,231],[213,227],[206,219]],d:[[223,239],[226,242],[231,248]],xl:[16,22,35],xr:[4,-2,-14]},
+    '4i':{c:[215,225],h:[[211,220],[205,213],[195,201]],t:[[219,230],[223,234],[231,244]],i:[[212,221],[208,217],[201,209]],d:[[218,229],[221,232],[226,238]],xl:[15,20,32],xr:[3,-2,-13]},
+    '5H':{c:[200,215],h:[[196,210],[192,206],[182,194]],t:[[204,220],[208,224],[214,232]],i:[[197,211],[194,208],[187,200]],d:[[203,219],[206,222],[210,227]],xl:[12,16,26],xr:[2,-3,-12]},
+    '6i':{c:[193,207],h:[[189,202],[185,198],[179,190]],t:[[197,212],[199,214],[205,221]],i:[[190,203],[187,200],[183,195]],d:[[196,211],[197,212],[201,216]],xl:[10,15,24],xr:[2,-3,-12]},
+    '7i':{c:[184,195],h:[[180,190],[178,188],[170,179]],t:[[188,200],[190,202],[194,207]],i:[[181,192],[180,190],[174,183]],d:[[187,198],[188,200],[191,203]],xl:[9,13,21],xr:[1,-3,-11]},
+    '8i':{c:[168,179],h:[[165,175],[162,172],[156,165]],t:[[171,183],[173,185],[177,190]],i:[[166,177],[164,174],[160,170]],d:[[170,181],[172,184],[174,186]],xl:[7,11,17],xr:[1,-3,-10]},
+    '9i':{c:[152,163],h:[[150,161],[148,158],[142,151]],t:[[154,165],[156,168],[160,172]],i:[[151,162],[149,159],[145,155]],d:[[153,164],[155,167],[158,170]],xl:[6,9,14],xr:[0,-3,-9]},
+    PW:{c:[138,144],h:[[136,142],[134,139],[130,135]],t:[[140,146],[142,149],[144,151]],i:[[137,143],[135,141],[132,137]],d:[[139,145],[141,147],[142,149]],xl:[4,7,12],xr:[0,-3,-8]},
+    '48':{c:[127,131],h:[[125,129],[123,126],[121,124]],t:[[129,133],[131,136],[133,138]],i:[[126,130],[124,128],[123,126]],d:[[128,132],[130,134],[131,136]],xl:[4,6,10],xr:[0,-2,-6]},
+    '52':{c:[114,119],h:[[112,117],[112,117],[108,112]],t:[[116,121],[116,121],[118,124]],i:[[113,118],[113,118],[110,114]],d:[[115,120],[115,120],[117,122]],xl:[3,4.5,8],xr:[0,-1.5,-4.5]},
+    '56':{c:[103,108],h:[[102,107],[100,105],[98,102]],t:[[104,109],[105,110],[106,111]],i:[[102,107],[101,106],[99,103]],d:[[104,109],[104,109],[105,110]],xl:[2,3,5],xr:[0,-1,-3]},
+    '58':{c:[95,98],h:[[94,97],[93,96],[91,93]],t:[[96,99],[97,100],[98,101]],i:[[94,97],[94,97],[92,95]],d:[[96,99],[96,99],[97,100]],xl:[2,3,4.5],xr:[0,-1,-3]}
+  };
+  var WIND_DIRS=[['calm','Calm'],['into','Into (headwind)'],['down','Down (tailwind)'],['lr','Cross, L to R'],
+    ['rl','Cross, R to L'],['il','Into, off the left'],['ir','Into, off the right'],['dl','Down, off the left'],['dr','Down, off the right']];
+  function windInterp(vals,calm,mph){
+    var pts=[[0,calm],[5,vals[0]],[10,vals[1]],[20,vals[2]]],m=Math.max(0,Math.min(mph,20));
+    for(var i=1;i<pts.length;i++){
+      if(m<=pts[i][0]){
+        var m0=pts[i-1][0],v0=pts[i-1][1],m1=pts[i][0],v1=pts[i][1],f=(m-m0)/(m1-m0||1);
+        return [v0[0]+f*(v1[0]-v0[0]),v0[1]+f*(v1[1]-v0[1])];
+      }
+    }
+    return pts[3][1];
+  }
+  function driftInterp(vals,mph){
+    var pts=[[0,0],[5,vals[0]],[10,vals[1]],[20,vals[2]]],m=Math.max(0,Math.min(mph,20));
+    for(var i=1;i<pts.length;i++){
+      if(m<=pts[i][0]){
+        var m0=pts[i-1][0],v0=pts[i-1][1],m1=pts[i][0],v1=pts[i][1];
+        return v0+(m-m0)/(m1-m0||1)*(v1-v0);
+      }
+    }
+    return vals[2];
+  }
+  function caddyEval(club,dir,mph){
+    var s=CADDY[club],ct,drft=0,shape='';
+    if(dir==='into')ct=windInterp(s.h,s.c,mph);
+    else if(dir==='down')ct=windInterp(s.t,s.c,mph);
+    else if(dir==='il'||dir==='ir')ct=windInterp(s.i,s.c,mph);
+    else if(dir==='dl'||dir==='dr')ct=windInterp(s.d,s.c,mph);
+    else ct=[s.c[0],s.c[1]];
+    if(dir==='lr')drft=driftInterp(s.xl,mph);
+    else if(dir==='rl')drft=driftInterp(s.xr,mph);
+    else if(dir==='il'||dir==='dl'){drft=0.7*driftInterp(s.xl,mph);shape='adds to a fade';}
+    else if(dir==='ir'||dir==='dr'){drft=0.7*driftInterp(s.xr,mph);shape='flies straighter than a stock fade';}
+    return {carry:ct[0],total:ct[1],drift:drft,shape:shape};
+  }
+  function caddyPick(dist,dir,mph,cap){
+    var best=null;
+    CODES.forEach(function(c){
+      var e=caddyEval(c,dir,mph);
+      if(cap!=null&&e.total>cap)return;
+      var score=e.carry<dist?(dist-e.carry)*1.25:e.carry-dist;
+      if(!best||score<best.score){best={club:c,score:score,carry:e.carry,total:e.total,drift:e.drift,shape:e.shape};}
+    });
+    if(!best)return 'No club fits under that cap.';
+    var wc=Math.round(best.carry),wt=Math.round(best.total);
+    var lines=[(dir!=='calm'&&mph>0)?best.club+' plays '+wc+' ('+wt+') in this wind.':best.club+' - '+wc+' ('+wt+').'];
+    var d=Math.round(Math.abs(best.drift));
+    if(d>=2){
+      var side=best.drift>0?'right':'left',aim=best.drift>0?'left':'right';
+      lines.push('Wind pushes it ~'+d+' yds '+side+' - aim '+d+' yds '+aim+' of target.');
+    } else if(dir!=='calm'&&mph>0){
+      lines.push('Play it straight at your target.');
+    }
+    if(best.shape)lines.push('Shape: '+best.shape+'.');
+    return lines.join('<br>');
+  }
+  var windTab='into';
+  var driftFmt=function(n){return n===0?'—':(n>0?n+'R':(-n)+'L');};
+  function windTable(){
+    var head,rows;
+    if(windTab==='lr'||windTab==='rl'){
+      var key=windTab==='lr'?'xl':'xr';
+      head='<th>Club</th><th>5</th><th>10</th><th>20</th>';
+      rows=CODES.map(function(c){
+        var s=CADDY[c],x=s[key],y=s.c[0];
+        var cell=function(i){return y+' <span class="dr">('+driftFmt(Math.round(x[i]))+')</span>';};
+        return '<tr><td class="cl">'+CODE_NAME[c]+'</td><td>'+cell(0)+'</td><td>'+cell(1)+'</td><td>'+cell(2)+'</td></tr>';
+      }).join('');
+    } else {
+      var k=windTab==='down'?'t':'h';
+      head='<th>Club</th><th>Calm</th><th>5</th><th>10</th><th>20</th>';
+      rows=CODES.map(function(c){
+        var s=CADDY[c],w=s[k];
+        return '<tr><td class="cl">'+CODE_NAME[c]+'</td><td class="mut">'+s.c[0]+'</td><td>'+w[0][0]+'</td><td>'+w[1][0]+'</td><td>'+w[2][0]+'</td></tr>';
+      }).join('');
+    }
+    document.getElementById('wind-table').innerHTML='<table class="wchart"><thead><tr>'+head+'</tr></thead><tbody>'+rows+'</tbody></table>';
+    document.querySelectorAll('#wind-tabs .windbtn').forEach(function(b){b.classList.toggle('on',b.dataset.w===windTab);});
+  }
+  document.getElementById('wind-tabs').innerHTML=[['into','INTO'],['down','DOWN'],['lr','L-R'],['rl','R-L']].map(function(a){
+    return '<button class="windbtn" data-w="'+a[0]+'">'+a[1]+'</button>';
+  }).join('');
+  document.querySelectorAll('#wind-tabs .windbtn').forEach(function(b){
+    b.addEventListener('click',function(){windTab=b.dataset.w;windTable();});
+  });
+  windTable();
+  document.getElementById('cad-dir').innerHTML=WIND_DIRS.map(function(w){
+    return '<option value="'+w[0]+'">'+w[1]+'</option>';
+  }).join('');
+  document.getElementById('cad-ask').addEventListener('click',function(){
+    var num=function(id){var v=document.getElementById(id).value.trim();if(v==='')return null;var n=Math.round(+v);return isFinite(n)?Math.max(0,Math.min(700,n)):null;};
+    var dist=num('cad-dist'),cap=num('cad-cap'),mph=num('cad-mph')||0,dir=document.getElementById('cad-dir').value;
+    document.getElementById('cad-out').innerHTML = dist==null?'Give me a distance first.':caddyPick(dist,dir,mph,cap);
+  });
+
   // ---- live Charleston weather (Open-Meteo, no API key needed) ----
   var WX_CODES={0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',48:'Rime fog',
     51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',56:'Freezing drizzle',57:'Freezing drizzle',
@@ -544,6 +697,7 @@ body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream
         wxSet('wx-temp',num(c.temperature_2m,'°'));
         wxSet('wx-cond',WX_CODES[c.weather_code]||'—');
         wxSet('wx-tile-temp',num(c.temperature_2m,'°'));
+        wxSet('wx-tile-cond',WX_CODES[c.weather_code]||'—');
         wxSet('wx-feels',num(c.apparent_temperature,'°'));
         wxSet('wx-hum',num(c.relative_humidity_2m,'%'));
         if(d.temperature_2m_max)wxSet('wx-hilo',num(d.temperature_2m_max[0],'°')+' · '+num(d.temperature_2m_min[0],'°'));
