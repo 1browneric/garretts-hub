@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Garrett's Hub</title>
+<meta name="theme-color" content="#00432E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Garrett's Hub">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,700&family=Montserrat:wght@400;500;600;700;800&family=Barlow:wght@400;500;600;700;800&family=Spline+Sans+Mono:wght@400;500;600;700&family=Yellowtail&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#00432E; --green-deep:#00291C; --gold:#C2A14D; --gold-deep:#94742B;
+  --cream:#F4EFE4; --cream-alt:#F1EADA; --sage:#8FAF9D; --success:#1E8E4F;
+  --green-pos:#3FBE77; --neg:#E06070;
+  --line:rgba(143,175,157,0.20); --card-line:rgba(143,175,157,0.22);
+  --font-title:'Libre Baskerville',Georgia,serif;
+  --font-caps:'Montserrat',system-ui,sans-serif;
+  --font-body:'Barlow',system-ui,sans-serif;
+  --font-data:'Spline Sans Mono',monospace;
+  --font-script:'Yellowtail',cursive;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream);overflow:hidden;}
+.app{max-width:430px;margin:0 auto;height:100vh;height:100svh;background:var(--green-deep);
+     display:flex;flex-direction:column;position:relative;overflow:hidden}
+@media (display-mode:standalone){.app{height:100vh}}
+/* top bar */
+.topbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;
+        padding:calc(env(safe-area-inset-top) + 12px) 20px 12px;}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{width:30px;height:30px;object-fit:contain}
+.brand span{font-family:var(--font-caps);font-weight:800;font-size:13px;letter-spacing:.2em;color:var(--sage)}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--green);border:1px solid rgba(143,175,157,.35);
+        display:flex;align-items:center;justify-content:center;font-family:var(--font-caps);font-weight:700;font-size:12px;color:var(--sage)}
+/* scroll */
+.scroll{flex:1 1 auto;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+.scroll::-webkit-scrollbar{display:none}
+.scroll{scrollbar-width:none}
+.screen{display:none;padding:6px 20px 30px}
+.screen.on{display:block}
+.eyebrow{font-family:var(--font-caps);font-weight:700;font-size:11px;letter-spacing:.2em;color:var(--sage)}
+.h-title{font-family:var(--font-title);font-weight:700;color:var(--cream)}
+.mono{font-family:var(--font-data)}
+.card{background:var(--green);border:1px solid rgba(143,175,157,.2);border-radius:18px}
+/* hero graph card */
+.gcard{background:linear-gradient(160deg,var(--green),var(--green-deep));border:1px solid var(--card-line);border-radius:22px;padding:20px 18px 16px}
+.gtop{display:flex;align-items:flex-end;justify-content:space-between;margin-top:12px}
+.gtop .big{font-family:var(--font-data);font-weight:600;font-size:44px;line-height:.9}
+.gdate{display:flex;justify-content:space-between;font-family:var(--font-data);font-size:9.5px;color:var(--sage);margin-top:4px;padding:0 2px}
+.pill{display:inline-flex;align-items:center;gap:5px;background:rgba(194,161,77,.14);border:1px solid rgba(194,161,77,.5);
+      border-radius:20px;padding:4px 10px}
+.pill .v{font-family:var(--font-data);font-weight:600;font-size:13px;color:var(--gold)}
+.lab{font-family:var(--font-caps);font-weight:600;letter-spacing:.14em;color:var(--sage)}
+/* buttons */
+.btn{border:none;cursor:pointer;font-family:var(--font-caps);border-radius:14px}
+.btn-gold{background:var(--gold);color:#00291C;font-weight:800;font-size:14px;letter-spacing:.1em;padding:16px}
+.sectlab{font-family:var(--font-caps);font-weight:700;font-size:11px;letter-spacing:.2em;color:var(--sage)}
+/* module grid */
+.grid{display:grid;grid-template-columns:1fr;gap:12px}
+.mod{cursor:pointer;background:var(--green);border:1px solid rgba(143,175,157,.2);border-radius:18px;padding:18px 20px;min-height:72px;
+     display:flex;align-items:center;justify-content:space-between;gap:12px}
+.mod .t{font-family:var(--font-title);font-weight:700;font-size:18px}
+.mright{text-align:right;flex:0 0 auto}
+.mod .s{font-family:var(--font-body);font-size:12px;color:var(--sage);margin-top:3px}
+/* rounds list */
+.sgbar{height:8px;background:var(--green-deep);border-radius:4px;position:relative;overflow:hidden}
+.sgbar .mid{position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(143,175,157,.4)}
+/* round tracker masthead — matches the course tracker page header */
+.mh-row{display:flex;align-items:center;gap:14px;margin-top:8px}
+.mh-ln{flex:1;height:1px;background:rgba(143,175,157,.35)}
+.mh-title{font-family:var(--font-title);font-style:italic;font-weight:700;font-size:24px;letter-spacing:.02em;color:var(--cream);white-space:nowrap;margin:0}
+.mh-tick{width:22px;height:3px;background:var(--gold);margin:8px auto 16px}
+/* club table */
+.ctable{background:var(--green);border:1px solid rgba(143,175,157,.2);border-radius:18px;padding:6px 4px}
+.chead,.crow{display:flex;padding:10px 16px}
+.crow{border-top:1px solid rgba(143,175,157,.12);align-items:center}
+.chead span{font-family:var(--font-caps);font-weight:700;font-size:9px;letter-spacing:.12em;color:var(--sage)}
+/* bottom nav — raised white golf-ball buttons, label underneath */
+.nav{flex:0 0 auto;background:linear-gradient(180deg,var(--gold),var(--gold-deep));border-top:1px solid rgba(255,255,255,.18);display:flex;
+     padding:0 8px calc(env(safe-area-inset-bottom) - 6px);position:relative;z-index:10}
+.navb{flex:1;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px}
+.ball{width:46px;height:46px;border-radius:50%;margin-top:-17px;display:flex;align-items:center;justify-content:center;
+      background:#fff url("assets/golf-ball.svg") center/100% 100% no-repeat;
+      box-shadow:0 6px 14px rgba(0,15,9,.5)}
+.navb svg{width:22px;height:22px;stroke:var(--green)}
+.navb.act svg{stroke:var(--gold-deep)}
+.navb .k{font-family:var(--font-caps);font-weight:700;font-size:8px;letter-spacing:.1em;color:rgba(0,41,28,.55)}
+.navb.act .k{color:#00291C}
+/* SG rows */
+.sghead{display:flex;align-items:baseline;justify-content:space-between;margin:24px 2px 12px}
+.pos{color:var(--green-pos)} .neg{color:var(--neg)}
+/* weather refresh button */
+.wxbtn{background:none;border:none;padding:3px;cursor:pointer;display:inline-flex;line-height:0}
+.wxbtn svg{width:15px;height:15px;stroke:var(--sage)}
+.wxbtn:active svg{stroke:var(--cream)}
+.spin{animation:spin .8s linear infinite;transform-origin:50% 50%}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* empty-state note */
+.empty{background:var(--green);border:1px dashed rgba(143,175,157,.4);border-radius:16px;padding:20px;text-align:center;
+       font-size:13px;color:var(--sage);line-height:1.55}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand"><img src="assets/sc-white.png" alt=""><span>GARRETT'S HUB</span></div>
+    <div class="avatar">GL</div>
+  </div>
+
+  <div class="scroll" id="scroll">
+
+    <!-- ============ HOME ============ -->
+    <section class="screen on" data-screen="home">
+
+      <div class="grid">
+        <div class="mod" data-go="rounds">
+          <div class="mleft">
+            <div class="t">My Rounds</div>
+          </div>
+          <div class="mright">
+            <div id="avg-tile" class="mono" style="font-weight:600;font-size:24px;line-height:.9">-</div>
+            <div class="lab" style="font-weight:600;font-size:8px;letter-spacing:.12em;margin-top:3px">SEASON AVG</div>
+          </div>
+        </div>
+        <div class="mod" data-go="tracker">
+          <div class="mleft">
+            <div class="t">Round Tracker</div>
+          </div>
+        </div>
+        <div class="mod" data-go="club">
+          <div class="mleft">
+            <div class="t">My Bag</div>
+          </div>
+        </div>
+        <div class="mod" data-go="caddie">
+          <div class="mleft">
+            <div class="t">Caddie</div>
+          </div>
+          <div class="mright">
+            <div id="wx-tile-temp" class="mono" style="font-weight:600;font-size:24px;line-height:.9">—</div>
+            <div id="wx-tile-cond" class="lab" style="font-weight:600;font-size:8px;letter-spacing:.12em;margin-top:3px">CHARLESTON</div>
+          </div>
+        </div>
+        <div class="mod" data-go="plan">
+          <div class="mleft">
+            <div class="t">Improvement</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="gcard" style="margin-top:16px">
+        <div class="lab" style="font-weight:700;font-size:11px;letter-spacing:.2em">HOW I'M PLAYING</div>
+        <div class="gtop">
+          <div>
+            <div class="big" id="avg-big">-</div>
+            <div class="lab" style="font-size:11px;margin-top:6px" id="avg-sub">NO ROUNDS YET</div>
+          </div>
+        </div>
+        <div id="chart-wrap"></div>
+      </div>
+
+      <div class="card" style="padding:20px;margin-top:16px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px">
+          <span class="lab" style="font-weight:700;font-size:11px;letter-spacing:.16em">STROKES GAINED</span>
+          <span class="lab" style="font-weight:600;font-size:9px;letter-spacing:.1em">VS 5 HCP</span>
+        </div>
+        <div id="sgbars-hub"></div>
+      </div>
+
+      <div class="sectlab" style="margin:26px 0 14px">LATEST ROUNDS</div>
+      <div id="latest-list"></div>
+
+      <div style="display:flex;gap:10px;margin-top:26px">
+        <button class="btn btn-gold" style="flex:1" data-go="tracker">START A ROUND</button>
+      </div>
+    </section>
+
+    <!-- ============ MY ROUNDS ============ -->
+    <section class="screen" data-screen="rounds">
+      <div class="eyebrow">SEASON 2026</div>
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-top:6px">
+        <div class="h-title" style="font-size:32px">My Rounds</div>
+        <div style="text-align:right">
+          <div id="avg-rounds" class="mono" style="font-weight:600;font-size:30px;line-height:.9">-</div>
+          <div class="lab" style="font-weight:600;font-size:9px;letter-spacing:.14em;margin-top:3px">SEASON AVG</div>
+        </div>
+      </div>
+      <div class="card" style="padding:20px;margin-top:20px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px">
+          <span class="lab" style="font-weight:700;font-size:11px;letter-spacing:.16em">STROKES GAINED</span>
+          <span class="lab" style="font-weight:600;font-size:9px;letter-spacing:.1em">VS 5 HCP</span>
+        </div>
+        <div id="sgbars-rounds"></div>
+      </div>
+
+      <div class="sectlab" style="margin:24px 0 12px">ALL ROUNDS</div>
+      <div id="rounds-list"></div>
+    </section>
+
+    <!-- ============ ROUND TRACKER (course library) ============ -->
+    <section class="screen" data-screen="tracker">
+      <div class="mh-row"><div class="mh-ln"></div><h1 class="mh-title">Round Tracker</h1><div class="mh-ln"></div></div>
+      <div class="mh-tick"></div>
+      <div id="course-list" class="grid"></div>
+    </section>
+
+    <!-- ============ CLUB DATA ============ -->
+    <section class="screen" data-screen="club">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px">
+        <div class="h-title" style="font-family:var(--font-script);font-weight:400;font-size:40px;line-height:1.05;color:#fff;margin-left:5px">My Bag</div>
+      </div>
+      <div style="font-size:12px;color:var(--sage);margin:8px 0 0 6px">Mirrors the Charleston National caddie bag.</div>
+      <div class="ctable" style="margin-top:14px">
+        <div class="chead">
+          <span style="flex:2">CLUB</span>
+          <span style="flex:1;text-align:right">CARRY</span>
+          <span style="flex:1;text-align:right">TOTAL</span>
+        </div>
+        <div id="club-list"></div>
+      </div>
+    </section>
+
+    <!-- ============ CADDIE ============ -->
+    <section class="screen" data-screen="caddie">
+      <div class="eyebrow">CHARLESTON</div>
+      <div class="h-title" style="font-size:32px;margin-top:6px">Caddie</div>
+
+      <!-- LIVE CHARLESTON WEATHER (Open-Meteo, refreshes on load) -->
+      <div class="card" style="padding:0;margin-top:20px;overflow:hidden">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;padding:18px 20px">
+          <div>
+            <div id="wx-when" class="mono" style="font-size:12px;color:var(--cream)">—</div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:6px">
+              <div class="lab" style="font-weight:700;font-size:9px;letter-spacing:.14em">CURRENT CONDITIONS</div>
+              <button id="wx-refresh" class="wxbtn" aria-label="Refresh weather"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v4h-4"/></svg></button>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <div id="wx-temp" class="mono" style="font-weight:600;font-size:46px;line-height:.82">—</div>
+            <div id="wx-cond" style="font-size:12px;color:var(--sage);margin-top:4px">Loading…</div>
+          </div>
+        </div>
+        <div style="display:flex;border-top:1px solid rgba(143,175,157,.16)">
+          <div style="flex:1;text-align:center;padding:12px 4px"><div id="wx-feels" class="mono" style="font-weight:600;font-size:16px">—</div><div class="lab" style="font-weight:600;font-size:8px;letter-spacing:.1em;margin-top:3px">FEELS LIKE</div></div>
+          <div style="width:1px;background:rgba(143,175,157,.16)"></div>
+          <div style="flex:1;text-align:center;padding:12px 4px"><div id="wx-hum" class="mono" style="font-weight:600;font-size:16px">—</div><div class="lab" style="font-weight:600;font-size:8px;letter-spacing:.1em;margin-top:3px">HUMIDITY</div></div>
+          <div style="width:1px;background:rgba(143,175,157,.16)"></div>
+          <div style="flex:1;text-align:center;padding:12px 4px"><div id="wx-hilo" class="mono" style="font-weight:600;font-size:16px">—</div><div class="lab" style="font-weight:600;font-size:8px;letter-spacing:.1em;margin-top:3px">HI · LO</div></div>
+        </div>
+      </div>
+
+      <!-- the live Swing Caddie (distance + wind -> club) lives in a round's Caddie tab -->
+      <div class="card" style="padding:22px;margin-top:14px;text-align:center">
+        <div class="lab" style="font-weight:700;font-size:10px;letter-spacing:.16em">SWING CADDIE</div>
+        <div style="font-size:13px;color:var(--sage);line-height:1.55;margin-top:10px">Club, wind, and plays-like yardage for any shot live in the round's Caddie tab. Start a round to use it.</div>
+      </div>
+    </section>
+
+    <!-- ============ IMPROVEMENT PLAN ============ -->
+    <section class="screen" data-screen="plan">
+      <div class="eyebrow">FOCUS AREAS</div>
+      <div class="h-title" style="font-size:32px;margin-top:6px">Improvement Plan</div>
+      <div style="font-size:13px;color:var(--sage);margin-top:6px;line-height:1.5" id="plan-sub">General guidance until your rounds build a strokes-gained picture.</div>
+      <div id="plan-list"></div>
+    </section>
+
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="nav">
+    <div class="navb act" data-go="home" data-nav="home">
+      <div class="ball"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M4 11l8-7 8 7M6 10v9h12v-9" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="k">HUB</div>
+    </div>
+    <div class="navb" data-go="rounds" data-nav="rounds">
+      <div class="ball"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M4 19V5M4 19h16M8 16v-4M12 16V8M16 16v-7" stroke-linecap="round"/></svg></div>
+      <div class="k">ROUNDS</div>
+    </div>
+    <div class="navb" data-go="tracker" data-nav="tracker">
+      <div class="ball"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M6 3v18M6 4h11l-2 3 2 3H6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="k">PLAY</div>
+    </div>
+    <div class="navb" data-go="caddie" data-nav="caddie">
+      <div class="ball"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M11 7.5 10.6 3.5"/><path d="M10.6 3.5 9.1 4.1"/><path d="M13.2 7.5 13.8 3.7"/><path d="M13.8 3.7 15.3 4.3"/><path d="M9.3 8 Q9.3 6.9 10.4 6.9 L14.2 6.9 Q15.3 6.9 15.3 8 L15.3 18 Q15.3 20.4 12.9 20.4 L11.7 20.4 Q9.3 20.4 9.3 18 Z"/><path d="M9.3 9.6 Q6.8 14 9.6 19"/><path d="M9.9 14 14.7 14"/></svg></div>
+      <div class="k">CADDIE</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ---- Garrett's Golf Tracker 2026 — Rounds tab, read-only via the intake Web App doGet.
+  // Same endpoint the Charleston National share page posts saves to; this only reads.
+  var HOOK='https://script.google.com/macros/s/AKfycbxvJtmEqGijjff3QyzaTqWDD22oZXGL1Wq9vAYGGXlTxxHbmn5g9HqCNFJWCCE0PK4u/exec';
+  var CACHE_KEY='gh_rounds_cache_v1';
+
+  // Bag mirrors the Charleston National tracker's caddie bag (same clubs + numbers).
+  var CLUBS=[
+    {name:'Driver',carry:'275',total:'295'},
+    {name:'Mini Driver',carry:'240',total:'265'},
+    {name:'7 Wood',carry:'225',total:'245'},
+    {name:'3 Hybrid',carry:'220',total:'235'},
+    {name:'4 Iron',carry:'215',total:'225'},
+    {name:'5 Hybrid',carry:'200',total:'215'},
+    {name:'6 Iron',carry:'193',total:'207'},
+    {name:'7 Iron',carry:'184',total:'195'},
+    {name:'8 Iron',carry:'168',total:'179'},
+    {name:'9 Iron',carry:'152',total:'163'},
+    {name:'PW',carry:'138',total:'144'},
+    {name:'AW',carry:'127',total:'131'},
+    {name:'52°',carry:'114',total:'119'},
+    {name:'56°',carry:'103',total:'108'},
+    {name:'58°',carry:'95',total:'98'}
+  ];
+
+  // Course library — each entry is a tracker page at course/<slug>/.
+  var COURSES=[
+    {name:'Charleston National Golf Club',loc:'Mount Pleasant, SC',par:72,slug:'charleston-national'}
+  ];
+
+  var CATS=['Driver','176+','101-175','100 & In','Putting','Ball Strike'];
+  var PLAN_DESC={
+    'Ball Strike':'Full-swing ball-striking, tee to green.',
+    'Putting':'Strokes gained or lost on the greens.',
+    '101-175':'Approach shots from 101 to 175 yards.',
+    '100 & In':'Wedges and short approaches inside 100 yards.',
+    '176+':'Long approaches from 176 yards and out.',
+    'Driver':'Off the tee.'
+  };
+  // Shown until rounds build a strokes-gained picture — general guidance, no invented stats.
+  var PLAN_GENERAL=[
+    {tag:'OFF THE TEE',title:'Fairways beat distance',body:'Pick the club that finds the short grass. Trouble off the tee costs more than twenty extra yards ever earns.'},
+    {tag:'APPROACH',title:'Middle of the green',body:'Aim center, take the putt. Chasing pins short-sides you; greens hit is the stat that moves scores fastest.'},
+    {tag:'SHORT GAME',title:'Own your wedge numbers',body:'Inside 100 yards, one stock distance you trust beats three you guess. Learn your carry for each wedge.'},
+    {tag:'PUTTING',title:'Speed before line',body:'Three-putts come from distance control, not misread lines. Roll every long putt to tap-in range.'}
+  ];
+
+  // ---- Rounds tab columns (after the 3 header rows):
+  // 0 Date · 1 Course · 2 Par · 3 Gross · 4 +/- · 5 F9 · 6 B9 · 7 FW · 8 FW% ·
+  // 9 GIR · 10 GIR% · 11 Putts · 12-17 SG scratch · 18-23 SG 5hcp · 24-29 SG 9hcp
+  function parseRounds(rows){
+    var out=[];
+    (rows||[]).slice(3).forEach(function(r){
+      if(!r || !r[0] || r[3]===''||r[3]==null) return;
+      var d=new Date(r[0]); if(isNaN(d)) return;
+      var sg=r.slice(18,24).map(function(v){var n=parseFloat(v);return isNaN(n)?null:n;});
+      out.push({
+        date:d, course:String(r[1]||''), par:+r[2]||0, score:+r[3]||0,
+        vp:(r[4]===''||r[4]==null)?null:+r[4], fw:r[7], gir:r[9], putts:r[11],
+        sg:sg.every(function(v){return v===null;})?null:sg
+      });
+    });
+    out.sort(function(a,b){return b.date-a.date;});
+    return out;
+  }
+
+  function el(id){return document.getElementById(id);}
+  function fmtDate(d){return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});}
+
+  function card(r){
+    var holes=r.par>=60?18:9, firDen=holes===18?'14':'7', girDen=holes===18?'18':'9';
+    var vp=r.vp==null?(r.score-r.par):r.vp;
+    var toPar=(vp>0?'+':'')+vp;
+    var stat=function(k,v){return '<div style="flex:1;text-align:center"><div class="mono" style="font-weight:600;font-size:14px">'+v+'</div><div class="lab" style="font-weight:600;font-size:8px;letter-spacing:.08em;margin-top:2px">'+k+'</div></div>';};
+    var cell=function(nm,v){
+      if(v==null)return '<div style="background:var(--green-deep);border-radius:9px;padding:8px 6px;text-align:center"><div class="mono" style="font-weight:600;font-size:13px;color:var(--sage)">-</div><div class="lab" style="font-weight:600;font-size:7.5px;letter-spacing:.04em;margin-top:2px">'+nm+'</div></div>';
+      var p=v>=0;return '<div style="background:var(--green-deep);border-radius:9px;padding:8px 6px;text-align:center"><div class="mono" style="font-weight:600;font-size:13px;color:'+(p?'var(--green-pos)':'var(--neg)')+'">'+(p?'+':'')+v.toFixed(1)+'</div><div class="lab" style="font-weight:600;font-size:7.5px;letter-spacing:.04em;margin-top:2px">'+nm+'</div></div>';};
+    var sgGrid=r.sg?('<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:12px">'+CATS.map(function(nm,i){return cell(nm,r.sg[i]);}).join('')+'</div>'):'';
+    return '<div class="card" style="padding:16px 16px 14px;margin-bottom:10px">'+
+      '<div style="display:flex;align-items:flex-start;justify-content:space-between">'+
+        '<div><div class="h-title" style="font-size:18px">'+r.course+'</div>'+
+        '<div style="font-family:var(--font-body);font-size:12px;color:var(--sage);margin-top:2px">'+fmtDate(r.date)+'</div></div>'+
+        '<div style="text-align:right"><div class="mono" style="font-weight:600;font-size:26px;line-height:1">'+r.score+'</div><div class="mono" style="font-size:12px;color:var(--gold)">'+toPar+'</div></div>'+
+      '</div>'+
+      '<div style="display:flex;gap:6px;margin-top:14px;padding:10px 0;border-top:1px solid rgba(143,175,157,.16);border-bottom:1px solid rgba(143,175,157,.16)">'+
+        stat('FIR',(r.fw!==''&&r.fw!=null?r.fw:'-')+'/'+firDen)+stat('GIR',(r.gir!==''&&r.gir!=null?r.gir:'-')+'/'+girDen)+stat('PUTTS',(r.putts!==''&&r.putts!=null?r.putts:'-'))+'</div>'+
+      sgGrid+
+    '</div>';
+  }
+
+  function sgRows(avg){
+    if(!avg){
+      return CATS.map(function(nm){
+        return '<div style="margin-bottom:14px">'+
+          '<div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-weight:600;font-size:13px">'+nm+'</span>'+
+          '<span class="mono" style="font-weight:600;font-size:13px;color:var(--sage)">-</span></div>'+
+          '<div class="sgbar"><div class="mid"></div></div>'+
+        '</div>';
+      }).join('')+'<div style="font-size:11.5px;color:var(--sage);line-height:1.5;margin-top:4px">Strokes gained fills in once shot-by-shot rounds are logged.</div>';
+    }
+    return CATS.map(function(nm,i){
+      var v=avg[i],pos=v>=0,half=Math.min(46,Math.abs(v)/4*46).toFixed(1);
+      return '<div style="margin-bottom:14px">'+
+        '<div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-weight:600;font-size:13px">'+nm+'</span>'+
+        '<span class="mono" style="font-weight:600;font-size:13px;color:'+(pos?'var(--green-pos)':'var(--neg)')+'">'+(pos?'+':'')+v.toFixed(1)+'</span></div>'+
+        '<div class="sgbar"><div class="mid"></div><div style="position:absolute;top:0;bottom:0;'+(pos?'left:50%':'right:50%')+';width:'+half+'%;background:'+(pos?'var(--green-pos)':'var(--neg)')+';border-radius:4px"></div></div>'+
+      '</div>';
+    }).join('');
+  }
+
+  function chart(rounds){
+    // last 5 rounds, oldest -> newest, gold bars rising off the par baseline
+    var rs=rounds.slice(0,5).reverse();
+    if(!rs.length){el('chart-wrap').innerHTML='<div class="empty" style="margin-top:16px;border:none;padding:14px 4px 4px">Save a round at Charleston National and your scores land here automatically.</div>';return;}
+    var w=320,bw=40,gap=(w-rs.length*bw)/(rs.length+1),base=92,maxOver=Math.max.apply(null,rs.map(function(r){return Math.max(1,r.score-r.par);}));
+    var bars='',labels='',dates='';
+    rs.forEach(function(r,i){
+      var x=gap+(bw+gap)*i, over=Math.max(0,r.score-r.par);
+      var h=Math.max(8,over/maxOver*60), y=base-h;
+      bars+='<rect x="'+x+'" y="'+y+'" width="'+bw+'" height="'+h+'" rx="5" fill="url(#gb)"/>';
+      labels+='<text x="'+(x+bw/2)+'" y="'+(y-6)+'"><tspan fill="#F4EFE4">'+r.score+' </tspan><tspan fill="#C2A14D">('+(over>0?'+':'')+(r.score-r.par)+')</tspan></text>';
+      dates+='<span>'+fmtDate(r.date)+'</span>';
+    });
+    el('chart-wrap').innerHTML=
+      '<svg viewBox="0 0 320 112" style="width:100%;height:104px;margin-top:16px;display:block;overflow:visible">'+
+      '<defs><linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C2A14D"/><stop offset="1" stop-color="#94742B"/></linearGradient></defs>'+
+      bars+
+      '<line x1="6" y1="'+base+'" x2="314" y2="'+base+'" stroke="#8FAF9D" stroke-width="1" stroke-dasharray="3 3" opacity="0.75"/>'+
+      '<g font-family="Spline Sans Mono" font-size="10" text-anchor="middle">'+labels+'</g>'+
+      '</svg><div class="gdate">'+dates+'</div>';
+  }
+
+  function render(rounds){
+    var full=rounds.filter(function(r){return r.par>=60;});
+    var avg=full.length?(full.reduce(function(s,r){return s+r.score;},0)/full.length):null;
+    var avgTxt=avg==null?'-':avg.toFixed(1);
+    el('avg-tile').textContent=avgTxt;
+    el('avg-rounds').textContent=avgTxt;
+    el('avg-big').textContent=avgTxt;
+    if(avg!=null){
+      var vps=full.map(function(r){return r.score-r.par;});
+      var vpAvg=vps.reduce(function(s,v){return s+v;},0)/vps.length;
+      el('avg-sub').textContent='SEASON AVG · '+(vpAvg>=0?'+':'')+vpAvg.toFixed(1)+' TO PAR';
+    } else {
+      el('avg-sub').textContent='NO ROUNDS YET';
+    }
+    chart(rounds);
+
+    // strokes gained: average of rounds that carry SG (vs 5 hcp)
+    var sgRoundsArr=rounds.filter(function(r){return r.sg;});
+    var sgAvg=null;
+    if(sgRoundsArr.length){
+      sgAvg=CATS.map(function(_,i){
+        var vs=sgRoundsArr.map(function(r){return r.sg[i];}).filter(function(v){return v!=null;});
+        return vs.length?vs.reduce(function(s,v){return s+v;},0)/vs.length:0;
+      });
+    }
+    el('sgbars-hub').innerHTML=el('sgbars-rounds').innerHTML=sgRows(sgAvg);
+
+    el('latest-list').innerHTML=rounds.length?rounds.slice(0,3).map(card).join(''):
+      '<div class="empty">No rounds yet. Open the Round Tracker, play Charleston National, and hit Save — your round shows up here and on your sheet automatically.</div>';
+    el('rounds-list').innerHTML=rounds.length?rounds.map(card).join(''):
+      '<div class="empty">Your saved rounds will list here, newest first.</div>';
+
+    // improvement plan
+    if(sgAvg){
+      el('plan-sub').textContent='Your strokes-gained categories vs a 5-handicap, ranked by biggest loss.';
+      el('plan-list').innerHTML=CATS.map(function(nm,i){return [nm,sgAvg[i]];}).sort(function(a,b){return a[1]-b[1];}).map(function(a,i){
+        var v=a[1],pos=v>=0,tag=(i===0?'BIGGEST LEAK':(pos?'STRENGTH':'FOCUS'));
+        return '<div class="card" style="padding:16px 18px;margin-top:12px">'+
+          '<div style="display:flex;align-items:center;justify-content:space-between">'+
+            '<span style="font-family:var(--font-caps);font-weight:800;font-size:10px;letter-spacing:.14em;color:var(--sage)">'+tag+'</span>'+
+            '<span class="mono" style="font-weight:600;font-size:14px;color:'+(pos?'var(--green-pos)':'var(--neg)')+'">'+(pos?'+':'')+v.toFixed(1)+'</span></div>'+
+          '<div class="h-title" style="font-size:18px;margin-top:6px">'+a[0]+'</div>'+
+          '<div style="font-size:13px;color:var(--sage);line-height:1.45;margin-top:4px">'+(PLAN_DESC[a[0]]||'')+'</div></div>';
+      }).join('');
+    } else {
+      el('plan-list').innerHTML=PLAN_GENERAL.map(function(p){
+        return '<div class="card" style="padding:16px 18px;margin-top:12px">'+
+          '<span style="font-family:var(--font-caps);font-weight:800;font-size:10px;letter-spacing:.14em;color:var(--gold)">'+p.tag+'</span>'+
+          '<div class="h-title" style="font-size:18px;margin-top:6px">'+p.title+'</div>'+
+          '<div style="font-size:13px;color:var(--sage);line-height:1.45;margin-top:4px">'+p.body+'</div></div>';
+      }).join('');
+    }
+  }
+
+  function load(){
+    // render whatever we have cached, then refresh from the sheet
+    try{var c=JSON.parse(localStorage.getItem(CACHE_KEY));if(c&&c.rows)render(parseRounds(c.rows));else render([]);}catch(e){render([]);}
+    fetch(HOOK).then(function(r){return r.json();}).then(function(j){
+      if(j&&j.ok&&j.rows){
+        try{localStorage.setItem(CACHE_KEY,JSON.stringify({rows:j.rows,t:Date.now()}));}catch(e){}
+        render(parseRounds(j.rows));
+      }
+    }).catch(function(){});
+  }
+
+  el('club-list').innerHTML=CLUBS.map(function(c){
+    return '<div class="crow"><span style="flex:2;font-weight:600;font-size:14px;color:#fff">'+c.name+'</span>'+
+      '<span class="mono" style="flex:1;text-align:right;font-weight:600;font-size:14px;color:#fff">'+c.carry+'</span>'+
+      '<span class="mono" style="flex:1;text-align:right;font-size:13px;color:var(--sage)">'+c.total+'</span></div>';
+  }).join('');
+
+  el('course-list').innerHTML=COURSES.map(function(c){
+    return '<a class="mod" href="course/'+c.slug+'/" style="text-decoration:none;color:inherit">'+
+      '<div class="mleft"><div class="t">'+c.name+'</div>'+
+      '<div class="s">'+c.loc+' · Par '+c.par+'</div></div>'+
+      '<div class="mright"><div class="lab" style="font-weight:700;font-size:10px;letter-spacing:.14em;color:var(--gold)">START</div></div>'+
+    '</a>';
+  }).join('');
+
+  // ---- live Charleston weather (Open-Meteo, no API key needed) ----
+  var WX_CODES={0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',48:'Rime fog',
+    51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',56:'Freezing drizzle',57:'Freezing drizzle',
+    61:'Light rain',63:'Rain',65:'Heavy rain',66:'Freezing rain',67:'Freezing rain',
+    71:'Light snow',73:'Snow',75:'Heavy snow',77:'Snow grains',80:'Light showers',81:'Showers',
+    82:'Heavy showers',85:'Snow showers',86:'Snow showers',95:'Thunderstorms',96:'Thunderstorms',99:'Thunderstorms'};
+  function wxSet(id,v){var e=document.getElementById(id);if(e)e.textContent=v;}
+  function wxWhen(){
+    wxSet('wx-when',new Date().toLocaleString('en-US',{timeZone:'America/New_York',weekday:'short',
+      month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}));
+  }
+  function wxLoad(){
+    wxWhen();
+    var sv=document.querySelector('#wx-refresh svg'); if(sv)sv.classList.add('spin');
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=32.7876&longitude=-79.9403&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&timezone=America%2FNew_York')
+      .then(function(r){return r.json();})
+      .then(function(j){
+        var c=j.current||{},d=j.daily||{};
+        var num=function(v,s){return (typeof v==='number'&&!isNaN(v))?Math.round(v)+s:'—';};
+        wxSet('wx-temp',num(c.temperature_2m,'°'));
+        wxSet('wx-cond',WX_CODES[c.weather_code]||'—');
+        wxSet('wx-tile-temp',num(c.temperature_2m,'°'));
+        wxSet('wx-feels',num(c.apparent_temperature,'°'));
+        wxSet('wx-hum',num(c.relative_humidity_2m,'%'));
+        if(d.temperature_2m_max)wxSet('wx-hilo',num(d.temperature_2m_max[0],'°')+' · '+num(d.temperature_2m_min[0],'°'));
+      })
+      .catch(function(){wxSet('wx-cond','Weather unavailable');})
+      .finally(function(){if(sv)setTimeout(function(){sv.classList.remove('spin');},500);});
+  }
+  var wxBtn=document.getElementById('wx-refresh'); if(wxBtn)wxBtn.addEventListener('click',wxLoad);
+  wxLoad();
+  setInterval(wxWhen,60000);    // tick the clock every minute
+  setInterval(wxLoad,900000);   // refresh conditions every 15 min
+
+  load();
+  setInterval(load,900000);     // re-pull the sheet every 15 min while open
+
+  // ---- navigation ----
+  var state={screen:'home'};
+  var scroll=document.getElementById('scroll');
+  function show(scr){
+    state.screen=scr;
+    document.querySelectorAll('.screen').forEach(function(s){s.classList.toggle('on',s.dataset.screen===scr);});
+    document.querySelectorAll('.navb').forEach(function(b){b.classList.toggle('act',b.dataset.nav===scr);});
+    scroll.scrollTop=0;
+  }
+  document.addEventListener('click',function(e){
+    var go=e.target.closest('[data-go]'); if(go){show(go.dataset.go);return;}
+  });
+})();
+</script>
+</body>
+</html>
