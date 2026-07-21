@@ -108,6 +108,22 @@ body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream
   -webkit-appearance:none;appearance:none;text-align:center}
 .cadf select{text-align:left;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%238FAF9D'/></svg>");background-repeat:no-repeat;background-position:right 12px center;padding-right:26px}
 .cadf input:focus,.cadf select:focus{outline:2px solid var(--gold-deep)}
+.caddyask{display:block;width:100%;margin-top:12px;padding:13px;border-radius:14px;background:var(--gold);
+  color:#00291C;font-family:var(--font-caps);font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+  font-weight:800;border:none;cursor:pointer}
+.caddyout{font-family:var(--font-data);font-size:13px;color:var(--cream);line-height:1.7;padding:12px 2px 0;text-align:center}
+.caddyout:empty{display:none}
+.puttlbl{font-family:var(--font-caps);font-weight:700;font-size:9px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--sage);text-align:center;margin:16px 0 0}
+.puttchart{width:100%;border-collapse:collapse;font-family:var(--font-data);font-size:12px;color:var(--cream);margin-top:10px}
+.puttchart th{font-family:var(--font-caps);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);
+  font-weight:700;padding:6px 3px;border-bottom:1px solid rgba(143,175,157,.3);text-align:center}
+.puttchart th:first-child{text-align:left}
+.puttchart td{padding:6px 3px;text-align:center;border-bottom:1px solid rgba(143,175,157,.14)}
+.puttchart td.cl{text-align:left;font-family:var(--font-body);font-weight:600}
+.puttchart tr.zeb{background:rgba(255,255,255,.03)}
+.puttchart tr.selrow{background:rgba(194,161,77,.20)}
+.puttchart td.ins{font-style:italic}
 .cadout{font-family:var(--font-data);font-size:13px;color:var(--cream);line-height:1.7;padding:12px 2px 0;text-align:center}
 .cadout:empty{display:none}
 .windsub{display:flex;gap:6px}
@@ -312,6 +328,12 @@ body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream
         <div class="lab" style="font-weight:700;font-size:10px;letter-spacing:.16em">WIND CHARTS</div>
         <div class="windsub" id="wind-tabs" style="margin-top:12px"></div>
         <div id="wind-table"></div>
+      </div>
+
+      <!-- Putting: break read + the read-to-pin chart, same engine as the trackers -->
+      <div class="card" style="padding:18px;margin-top:14px">
+        <div class="lab" style="font-weight:700;font-size:10px;letter-spacing:.16em">PUTTING</div>
+        <div id="putt-body" style="margin-top:12px"></div>
       </div>
     </section>
 
@@ -556,6 +578,157 @@ body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream
     '</a>';
   }).join('');
 
+  var numOrNull = function(s){ var v=String(s).trim(); if(v==='') return null;
+    var n=Math.round(+v); return isFinite(n) ? Math.max(0, Math.min(700, n)) : null; };
+
+  // ---- Putting — green-reading charts from Eric's Green Break Chart PDF
+  // (read to pin, inches, per stimp 8-12; rows = side slope %, cols = putt feet).
+  // Values are the chart's, verbatim (feet-inch entries converted to inches).
+  var BREAK_SLOPES=[0.5,1,1.5,2,2.5,3,3.5,4];
+  var BREAK_FT=[2,3,4,5,6,7,8,9,10,11,12,15,18,21,30,60];
+  var BREAK={
+    "8":[[0.1,0.4,0.7,1,1.2,1.5,1.7,2,2.5,2.5,3,3.5,4.5,5,8,16],
+         [0.3,0.8,1.3,2,2.4,3,3.5,4,4.5,5,5.5,7,9,10,15,31],
+         [0.4,1.2,2,3,3.6,4.5,5,6,7,8,8,11,13,16,23,48],
+         [0.5,1.6,2.7,3.7,4.8,6,7,8,9,10,11,14,18,21,30,60],
+         [0.7,2,3.3,4.7,6,7,9,10,11,13,14,18,22,26,36,78],
+         [0.8,2.4,4,5.6,7,9,10,12,14,15,17,22,23,21,48,96],
+         [0.9,2.8,4.7,7,8,10,12,14,16,18,20,25,31,36,54,108],
+         [1,3,5,7,10,12,14,16,18,20,22,29,36,42,60,126]],
+    "9":[[0.1,0.5,0.8,1.1,1.4,1.7,2,2.3,2.6,3,3,4,5,6,9,18],
+         [0.3,0.9,1.5,2.1,2.7,3.3,4,4.5,5.1,6,6,8,10,12,17,36],
+         [0.5,1.4,2.3,3.2,4.1,5,6,7,8,9,9,12,15,18,26,54],
+         [0.6,1.8,3,4.2,5.4,7,8,9,10,11,13,16,20,23,36,72],
+         [0.7,2.3,3.7,5.3,7,8,10,11,13,14,16,20,25,29,42,90],
+         [0.9,2.7,4.5,6,8,10,12,14,15,17,19,24,30,36,51,108],
+         [1,3.2,5.2,7,9,12,14,16,18,20,22,28,36,41,60,126],
+         [1.2,3.6,6,8,11,13,16,18,20,23,25,32,40,48,72,144]],
+    "10":[[0.2,0.5,0.8,1.2,1.5,1.8,2.2,2.5,2.8,3.2,3.5,4.5,5.5,7,10,20],
+         [0.3,1,1.7,2.3,3,3.7,4.3,5,5.7,6,7,9,11,13,19,39],
+         [0.5,1.5,2.5,3.5,4.5,5.5,7,8,9,10,11,14,17,20,29,59],
+         [0.7,2,3.3,4.7,6,7,9,10,11,13,14,18,22,26,38,78],
+         [0.8,2.5,4.2,5.8,8,9,11,13,14,16,18,23,28,33,48,98],
+         [1,3,5,7,9,11,13,15,17,19,21,27,33,39,57,117],
+         [1.2,3.5,5.8,8,11,13,15,18,20,22,25,32,39,46,67,137],
+         [1.3,4,7,9,12,15,17,20,23,25,28,36,44,52,76,156]],
+    "11":[[0.2,0.6,0.9,1.3,1.7,2,2.4,2.8,3.1,3.5,3.9,5,6,7,10,21],
+         [0.4,1.1,1.8,2.6,3.3,4,4.8,5.5,6,7,8,10,12,14,21,42],
+         [0.5,1.7,2.8,3.9,5,6,7,8,9,10,12,15,18,21,31,64],
+         [0.7,2.2,3.7,5.1,7,8,10,11,12,14,15,20,24,29,42,86],
+         [0.9,2.8,4.6,6,8,10,12,14,16,17,19,25,30,36,52,108],
+         [1.1,3.3,5.5,8,10,12,14,17,19,21,23,30,36,42,63,132],
+         [1.3,3.9,6,9,12,14,17,19,22,24,27,35,42,50,73,150],
+         [1.5,4.4,7,10,13,16,19,22,25,28,31,40,48,57,84,174]],
+    "12":[[0.2,0.6,1,1.4,1.8,2.2,2.6,3,3.4,3.8,4.2,5.4,7,8,11,23],
+         [0.4,1.2,2,2.8,3.6,4.4,5.2,6,7,8,8,11,13,16,23,48],
+         [0.6,1.8,3,4.2,5.4,7,8,9,10,11,13,16,20,23,34,70],
+         [0.8,2.4,4,5.6,7,9,10,12,14,15,17,22,26,31,46,94],
+         [1,3,5,7,9,11,13,15,17,19,21,27,33,39,57,117],
+         [1.2,3.6,6,8,11,13,16,18,20,23,25,32,40,48,68,140],
+         [1.4,4.2,7,10,13,15,18,21,24,27,29,38,46,56,80,164],
+         [1.6,4.8,8,11,14,18,21,24,27,30,34,43,53,62,91,187]]
+  };
+  // Up/downhill multipliers derived from Eric's WhyGolf stimp cards (ratio of each
+  // U/D section to its flat section, measured on the 2% side-slope row): uphill
+  // putts break less, downhill break more, and the effect grows on slower greens.
+  var BREAK_UD={
+    "8": {u1:0.85,u2:0.74,u3:0.62,d1:1.21,d2:1.42,d3:1.61},
+    "9": {u1:0.87,u2:0.74,u3:0.65,d1:1.20,d2:1.37,d3:1.55},
+    "10":{u1:0.88,u2:0.78,u3:0.67,d1:1.17,d2:1.31,d3:1.47},
+    "11":{u1:0.90,u2:0.79,u3:0.70,d1:1.13,d2:1.28,d3:1.42},
+    "12":{u1:0.93,u2:0.84,u3:0.73,d1:1.14,d2:1.28,d3:1.42}
+  };
+  var UD_LABELS=[["flat","Flat putt"],["u1","1% uphill"],["u2","2% uphill"],["u3","3% uphill"],
+                 ["d1","1% downhill"],["d2","2% downhill"],["d3","3% downhill"]];
+  var puttIn={len:null,slope:"2",stimp:"10",ud:"flat",out:""};
+  function fmtBreak(v){
+    if(v<10) return (Math.round(v*10)/10)+'"';
+    if(v<36) return Math.round(v)+'"';
+    return Math.floor(v/12)+"'"+Math.round(v%12)+'"';
+  }
+  function breakInterp(stimp,slopeIdx,ft){
+    var row=BREAK[stimp][slopeIdx];
+    var f=Math.max(BREAK_FT[0],Math.min(ft,BREAK_FT[BREAK_FT.length-1]));
+    for(var i=1;i<BREAK_FT.length;i++){
+      if(f<=BREAK_FT[i]){
+        var f0=BREAK_FT[i-1],f1=BREAK_FT[i];
+        return row[i-1]+(f-f0)/(f1-f0)*(row[i]-row[i-1]);
+      }
+    }
+    return row[row.length-1];
+  }
+  // Inside-edge rule from the chart PDF: values of 2.1" and under are italic in the
+  // source — the break is less than half the 4.25" cup, so aim inside the cup edge.
+  var INSIDE_EDGE=2.125;
+  function puttRead(){
+    if(puttIn.len==null) return "Give me a putt length first.";
+    var slopeIdx=BREAK_SLOPES.indexOf(parseFloat(puttIn.slope));
+    if(slopeIdx<0) slopeIdx=3;
+    var flat=breakInterp(puttIn.stimp,slopeIdx,puttIn.len);
+    var fac=puttIn.ud==="flat"?1:BREAK_UD[puttIn.stimp][puttIn.ud];
+    var v=flat*fac;
+    var lines=[ v<INSIDE_EDGE
+      ? "Play it "+fmtBreak(v)+" inside the high edge of the cup."
+      : "Aim "+fmtBreak(v)+" to the high side of the cup." ];
+    if(puttIn.ud!=="flat"){
+      var lbl=""; for(var i=0;i<UD_LABELS.length;i++) if(UD_LABELS[i][0]===puttIn.ud) lbl=UD_LABELS[i][1];
+      lines.push(lbl+": flat read "+fmtBreak(flat)+".");
+    }
+    if(puttIn.len>60) lines.push("Chart tops out at 60 ft - 60 ft read shown.");
+    return lines.join("<br>");
+  }
+  function puttChart(){
+    var slopeIdx=BREAK_SLOPES.indexOf(parseFloat(puttIn.slope));
+    if(slopeIdx<0) slopeIdx=3;
+    var grid=BREAK[puttIn.stimp];
+    var chunk=function(lo,hi){
+      var head='<th>Slope</th>'+BREAK_FT.slice(lo,hi).map(function(f){return '<th>'+f+"'"+'</th>';}).join('');
+      var rows=grid.map(function(row,si){
+        var cells='';
+        for(var i=lo;i<hi;i++){
+          var v=row[i];
+          cells+='<td'+(v<INSIDE_EDGE?' style="font-style:italic"':'')+'>'+fmtBreak(v)+'</td>';
+        }
+        var bg=si===slopeIdx?'background:rgba(27,78,142,.14)':(si%2?'background:rgba(12,35,64,.055)':'');
+        return '<tr'+(bg?' style="'+bg+'"':'')+'><td class="cl">'+BREAK_SLOPES[si]+'%</td>'+cells+'</tr>';
+      }).join('');
+      return '<table class="chart" style="font-size:13px;margin-top:10px"><thead><tr>'+head+'</tr></thead><tbody>'+rows+'</tbody></table>';
+    };
+    return '<div class="edlbl" style="margin:16px 0 0;text-align:center;font-family:var(--font-data);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#5C6B82">Break chart &middot; stimp '+puttIn.stimp+' &middot; read to pin</div>'+
+      chunk(0,4)+chunk(4,8)+chunk(8,12)+chunk(12,16);
+  }
+  function puttBody(){
+    return '<div class="cadrow">'+
+      '<div class="cadf"><label>Putt length (ft)</label>'+
+        '<input type="number" inputmode="numeric" id="pt-len" value="'+(puttIn.len==null?'':puttIn.len)+'"></div>'+
+      '<div class="cadf"><label>Side slope</label>'+
+        '<select id="pt-slope">'+BREAK_SLOPES.map(function(s){
+          return '<option value="'+s+'"'+(puttIn.slope==String(s)?' selected':'')+'>'+s+'%</option>';
+        }).join('')+'</select></div>'+
+    '</div>'+
+    '<div class="cadrow">'+
+      '<div class="cadf"><label>Stimp</label>'+
+        '<select id="pt-stimp">'+["8","9","10","11","12"].map(function(s){
+          return '<option value="'+s+'"'+(puttIn.stimp===s?' selected':'')+'>'+s+'</option>';
+        }).join('')+'</select></div>'+
+      '<div class="cadf"><label>Up or down</label>'+
+        '<select id="pt-ud">'+UD_LABELS.map(function(u){
+          return '<option value="'+u[0]+'"'+(puttIn.ud===u[0]?' selected':'')+'>'+u[1]+'</option>';
+        }).join('')+'</select></div>'+
+    '</div>'+
+    '<button class="caddyask" data-act="putt">Read the break</button>'+
+    '<div class="caddyout" id="puttout">'+(puttIn.out||'')+'</div>'+
+    puttChart();
+  }
+  function grabPuttInputs(){
+    var l=document.getElementById('pt-len');
+    if(!l) return;
+    puttIn.len=numOrNull(l.value);
+    puttIn.slope=document.getElementById('pt-slope').value;
+    puttIn.stimp=document.getElementById('pt-stimp').value;
+    puttIn.ud=document.getElementById('pt-ud').value;
+  }
+
   // ---- Swing Caddie + wind charts (same engine and numbers as the trackers) ----
   var CODES=['D','MD','7w','3H','4i','5H','6i','7i','8i','9i','PW','48','52','56','58'];
   var CODE_NAME={D:'Driver',MD:'Mini Driver','7w':'7 Wood','3H':'3 Hybrid','4i':'4 Iron','5H':'5 Hybrid',
@@ -666,6 +839,21 @@ body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream
   document.getElementById('cad-dir').innerHTML=WIND_DIRS.map(function(w){
     return '<option value="'+w[0]+'">'+w[1]+'</option>';
   }).join('');
+  // ---- putting card ----
+  function renderPutt(){ document.getElementById('putt-body').innerHTML = puttBody(); }
+  renderPutt();
+  document.addEventListener('click', function(e){
+    var b = e.target.closest && e.target.closest('[data-act="putt"]');
+    if (!b) return;
+    grabPuttInputs();
+    puttIn.out = puttRead();
+    document.getElementById('puttout').innerHTML = puttIn.out;
+  });
+  // stimp / slope changes redraw the chart so the highlighted row follows
+  document.addEventListener('change', function(e){
+    if (e.target.id === 'pt-stimp' || e.target.id === 'pt-slope'){ grabPuttInputs(); renderPutt(); }
+  });
+
   document.getElementById('cad-ask').addEventListener('click',function(){
     var num=function(id){var v=document.getElementById(id).value.trim();if(v==='')return null;var n=Math.round(+v);return isFinite(n)?Math.max(0,Math.min(700,n)):null;};
     var dist=num('cad-dist'),cap=num('cad-cap'),mph=num('cad-mph')||0,dir=document.getElementById('cad-dir').value;
