@@ -690,12 +690,12 @@ body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream
           var v=row[i];
           cells+='<td'+(v<INSIDE_EDGE?' style="font-style:italic"':'')+'>'+fmtBreak(v)+'</td>';
         }
-        var bg=si===slopeIdx?'background:rgba(27,78,142,.14)':(si%2?'background:rgba(12,35,64,.055)':'');
-        return '<tr'+(bg?' style="'+bg+'"':'')+'><td class="cl">'+BREAK_SLOPES[si]+'%</td>'+cells+'</tr>';
+        var cls=si===slopeIdx?'selrow':(si%2?'zeb':'');
+        return '<tr'+(cls?' class="'+cls+'"':'')+'><td class="cl">'+BREAK_SLOPES[si]+'%</td>'+cells+'</tr>';
       }).join('');
-      return '<table class="chart" style="font-size:13px;margin-top:10px"><thead><tr>'+head+'</tr></thead><tbody>'+rows+'</tbody></table>';
+      return '<table class="puttchart"><thead><tr>'+head+'</tr></thead><tbody>'+rows+'</tbody></table>';
     };
-    return '<div class="edlbl" style="margin:16px 0 0;text-align:center;font-family:var(--font-data);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#5C6B82">Break chart &middot; stimp '+puttIn.stimp+' &middot; read to pin</div>'+
+    return '<div class="puttlbl">Break chart &middot; stimp '+puttIn.stimp+' &middot; read to pin</div>'+
       chunk(0,4)+chunk(4,8)+chunk(8,12)+chunk(12,16);
   }
   function puttBody(){
