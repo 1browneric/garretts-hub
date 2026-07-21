@@ -124,6 +124,11 @@ body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream
 .puttchart tr.zeb{background:rgba(255,255,255,.03)}
 .puttchart tr.selrow{background:rgba(194,161,77,.20)}
 .puttchart td.ins{font-style:italic}
+.cadtabs{display:flex;gap:6px}
+.cadtab{flex:1;padding:10px 4px;border-radius:10px;border:1px solid rgba(143,175,157,.35);cursor:pointer;
+  background:transparent;color:var(--sage);white-space:nowrap;
+  font-family:var(--font-caps);font-weight:700;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase}
+.cadtab.on{background:var(--gold);border-color:var(--gold);color:#00291C}
 .cadout{font-family:var(--font-data);font-size:13px;color:var(--cream);line-height:1.7;padding:12px 2px 0;text-align:center}
 .cadout:empty{display:none}
 .windsub{display:flex;gap:6px}
@@ -212,7 +217,7 @@ body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream
       <div class="card" style="padding:20px;margin-top:16px">
         <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px">
           <span class="lab" style="font-weight:700;font-size:11px;letter-spacing:.16em">STROKES GAINED</span>
-          <span class="lab" style="font-weight:600;font-size:9px;letter-spacing:.1em">VS 5 HCP</span>
+          <span class="lab" style="font-weight:600;font-size:9px;letter-spacing:.1em">VS 9 HCP</span>
         </div>
         <div id="sgbars-hub"></div>
       </div>
@@ -238,7 +243,7 @@ body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream
       <div class="card" style="padding:20px;margin-top:20px">
         <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px">
           <span class="lab" style="font-weight:700;font-size:11px;letter-spacing:.16em">STROKES GAINED</span>
-          <span class="lab" style="font-weight:600;font-size:9px;letter-spacing:.1em">VS 5 HCP</span>
+          <span class="lab" style="font-weight:600;font-size:9px;letter-spacing:.1em">VS 9 HCP</span>
         </div>
         <div id="sgbars-rounds"></div>
       </div>
@@ -308,32 +313,15 @@ body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream
         </div>
       </div>
 
-      <!-- Swing Caddie: distance + wind -> the club, same engine as the trackers -->
+      <!-- One Caddie card, four tabs — same shape as the Golf Hub -->
       <div class="card" style="padding:18px;margin-top:14px">
-        <div class="lab" style="font-weight:700;font-size:10px;letter-spacing:.16em">SWING CADDIE</div>
-        <div class="cadrow" style="margin-top:12px">
-          <div class="cadf"><label>Distance (yd)</label><input type="number" inputmode="numeric" id="cad-dist"></div>
-          <div class="cadf"><label>No longer than</label><input type="number" inputmode="numeric" id="cad-cap"></div>
+        <div class="cadtabs" id="cad-tabs">
+          <button class="cadtab on" data-cad="swing">Swing</button>
+          <button class="cadtab" data-cad="dist">My Bag</button>
+          <button class="cadtab" data-cad="wind">Wind</button>
+          <button class="cadtab" data-cad="putt">Putting</button>
         </div>
-        <div class="cadrow">
-          <div class="cadf"><label>Wind (mph)</label><input type="number" inputmode="numeric" id="cad-mph"></div>
-          <div class="cadf"><label>Direction</label><select id="cad-dir"></select></div>
-        </div>
-        <button class="btn btn-gold" id="cad-ask" style="width:100%;margin-top:12px;padding:13px;font-size:12px">SWING CADDIE</button>
-        <div id="cad-out" class="cadout"></div>
-      </div>
-
-      <!-- Wind charts: carry per club at 5/10/20 mph -->
-      <div class="card" style="padding:18px;margin-top:14px">
-        <div class="lab" style="font-weight:700;font-size:10px;letter-spacing:.16em">WIND CHARTS</div>
-        <div class="windsub" id="wind-tabs" style="margin-top:12px"></div>
-        <div id="wind-table"></div>
-      </div>
-
-      <!-- Putting: break read + the read-to-pin chart, same engine as the trackers -->
-      <div class="card" style="padding:18px;margin-top:14px">
-        <div class="lab" style="font-weight:700;font-size:10px;letter-spacing:.16em">PUTTING</div>
-        <div id="putt-body" style="margin-top:12px"></div>
+        <div id="cad-body" style="margin-top:14px"></div>
       </div>
     </section>
 
@@ -418,12 +406,13 @@ body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream
   // ---- Rounds tab columns (after the 3 header rows):
   // 0 Date · 1 Course · 2 Par · 3 Gross · 4 +/- · 5 F9 · 6 B9 · 7 FW · 8 FW% ·
   // 9 GIR · 10 GIR% · 11 Putts · 12-17 SG scratch · 18-23 SG 5hcp · 24-29 SG 9hcp
+  // Garrett's baseline is 9 HCP, so the SG columns read are 24-29.
   function parseRounds(rows){
     var out=[];
     (rows||[]).slice(3).forEach(function(r){
       if(!r || !r[0] || r[3]===''||r[3]==null) return;
       var d=new Date(r[0]); if(isNaN(d)) return;
-      var sg=r.slice(18,24).map(function(v){var n=parseFloat(v);return isNaN(n)?null:n;});
+      var sg=r.slice(24,30).map(function(v){var n=parseFloat(v);return isNaN(n)?null:n;});
       out.push({
         date:d, course:String(r[1]||''), par:+r[2]||0, score:+r[3]||0,
         vp:(r[4]===''||r[4]==null)?null:+r[4], fw:r[7], gir:r[9], putts:r[11],
@@ -809,7 +798,30 @@ body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream
   }
   var windTab='into';
   var driftFmt=function(n){return n===0?'—':(n>0?n+'R':(-n)+'L');};
-  function windTable(){
+  // ---- Caddie: one card, four tabs (Swing / My Bag / Wind / Putting) ----
+  var cadTab='swing';
+  var cadIn={dist:null,cap:null,mph:null,dir:'calm',out:''};
+  function swingBody(){
+    return '<div class="cadrow">'+
+      '<div class="cadf"><label>Distance (yd)</label><input type="number" inputmode="numeric" id="cad-dist" value="'+(cadIn.dist==null?'':cadIn.dist)+'"></div>'+
+      '<div class="cadf"><label>No longer than</label><input type="number" inputmode="numeric" id="cad-cap" value="'+(cadIn.cap==null?'':cadIn.cap)+'"></div>'+
+      '</div>'+
+      '<div class="cadrow">'+
+      '<div class="cadf"><label>Wind (mph)</label><input type="number" inputmode="numeric" id="cad-mph" value="'+(cadIn.mph==null?'':cadIn.mph)+'"></div>'+
+      '<div class="cadf"><label>Direction</label><select id="cad-dir">'+WIND_DIRS.map(function(w){
+        return '<option value="'+w[0]+'"'+(cadIn.dir===w[0]?' selected':'')+'>'+w[1]+'</option>';
+      }).join('')+'</select></div>'+
+      '</div>'+
+      '<button class="btn btn-gold" id="cad-ask" style="width:100%;margin-top:12px;padding:13px;font-size:12px">SWING CADDIE</button>'+
+      '<div id="cad-out" class="cadout">'+(cadIn.out||'')+'</div>';
+  }
+  function bagBody(){
+    var rows=CODES.map(function(c){
+      return '<tr><td class="cl">'+CODE_NAME[c]+'</td><td>'+CADDY[c].c[0]+'</td><td class="mut">'+CADDY[c].c[1]+'</td></tr>';
+    }).join('');
+    return '<table class="wchart"><thead><tr><th>Club</th><th>Carry</th><th>Total</th></tr></thead><tbody>'+rows+'</tbody></table>';
+  }
+  function windBody(){
     var head,rows;
     if(windTab==='lr'||windTab==='rl'){
       var key=windTab==='lr'?'xl':'xr';
@@ -827,39 +839,40 @@ body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream
         return '<tr><td class="cl">'+CODE_NAME[c]+'</td><td class="mut">'+s.c[0]+'</td><td>'+w[0][0]+'</td><td>'+w[1][0]+'</td><td>'+w[2][0]+'</td></tr>';
       }).join('');
     }
-    document.getElementById('wind-table').innerHTML='<table class="wchart"><thead><tr>'+head+'</tr></thead><tbody>'+rows+'</tbody></table>';
-    document.querySelectorAll('#wind-tabs .windbtn').forEach(function(b){b.classList.toggle('on',b.dataset.w===windTab);});
+    var sub=[['into','INTO'],['down','DOWN'],['lr','L-R'],['rl','R-L']].map(function(a){
+      return '<button class="windbtn'+(windTab===a[0]?' on':'')+'" data-w="'+a[0]+'">'+a[1]+'</button>';
+    }).join('');
+    return '<div class="windsub">'+sub+'</div><table class="wchart"><thead><tr>'+head+'</tr></thead><tbody>'+rows+'</tbody></table>';
   }
-  document.getElementById('wind-tabs').innerHTML=[['into','INTO'],['down','DOWN'],['lr','L-R'],['rl','R-L']].map(function(a){
-    return '<button class="windbtn" data-w="'+a[0]+'">'+a[1]+'</button>';
-  }).join('');
-  document.querySelectorAll('#wind-tabs .windbtn').forEach(function(b){
-    b.addEventListener('click',function(){windTab=b.dataset.w;windTable();});
+  function renderCaddie(){
+    document.querySelectorAll('#cad-tabs .cadtab').forEach(function(b){ b.classList.toggle('on', b.dataset.cad===cadTab); });
+    document.getElementById('cad-body').innerHTML =
+      cadTab==='dist' ? bagBody() : cadTab==='wind' ? windBody() : cadTab==='putt' ? puttBody() : swingBody();
+  }
+  document.querySelectorAll('#cad-tabs .cadtab').forEach(function(b){
+    b.addEventListener('click', function(){ cadTab=b.dataset.cad; renderCaddie(); });
   });
-  windTable();
-  document.getElementById('cad-dir').innerHTML=WIND_DIRS.map(function(w){
-    return '<option value="'+w[0]+'">'+w[1]+'</option>';
-  }).join('');
-  // ---- putting card ----
-  function renderPutt(){ document.getElementById('putt-body').innerHTML = puttBody(); }
-  renderPutt();
   document.addEventListener('click', function(e){
-    var b = e.target.closest && e.target.closest('[data-act="putt"]');
-    if (!b) return;
-    grabPuttInputs();
-    puttIn.out = puttRead();
-    document.getElementById('puttout').innerHTML = puttIn.out;
+    var t2=e.target;
+    var w=t2.closest && t2.closest('.windbtn');
+    if(w){ windTab=w.dataset.w; renderCaddie(); return; }
+    if(t2.id==='cad-ask'){
+      var num=function(id){var v=document.getElementById(id).value.trim();if(v==='')return null;var n=Math.round(+v);return isFinite(n)?Math.max(0,Math.min(700,n)):null;};
+      cadIn.dist=num('cad-dist'); cadIn.cap=num('cad-cap'); cadIn.mph=num('cad-mph')||0;
+      cadIn.dir=document.getElementById('cad-dir').value;
+      cadIn.out = cadIn.dist==null ? 'Give me a distance first.' : caddyPick(cadIn.dist,cadIn.dir,cadIn.mph,cadIn.cap);
+      document.getElementById('cad-out').innerHTML = cadIn.out;
+      return;
+    }
+    if(t2.closest && t2.closest('[data-act="putt"]')){
+      grabPuttInputs(); puttIn.out = puttRead();
+      document.getElementById('puttout').innerHTML = puttIn.out;
+    }
   });
-  // stimp / slope changes redraw the chart so the highlighted row follows
   document.addEventListener('change', function(e){
-    if (e.target.id === 'pt-stimp' || e.target.id === 'pt-slope'){ grabPuttInputs(); renderPutt(); }
+    if (e.target.id === 'pt-stimp' || e.target.id === 'pt-slope'){ grabPuttInputs(); renderCaddie(); }
   });
-
-  document.getElementById('cad-ask').addEventListener('click',function(){
-    var num=function(id){var v=document.getElementById(id).value.trim();if(v==='')return null;var n=Math.round(+v);return isFinite(n)?Math.max(0,Math.min(700,n)):null;};
-    var dist=num('cad-dist'),cap=num('cad-cap'),mph=num('cad-mph')||0,dir=document.getElementById('cad-dir').value;
-    document.getElementById('cad-out').innerHTML = dist==null?'Give me a distance first.':caddyPick(dist,dir,mph,cap);
-  });
+  renderCaddie();
 
   // ---- live Charleston weather (Open-Meteo, no API key needed) ----
   var WX_CODES={0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',48:'Rime fog',
