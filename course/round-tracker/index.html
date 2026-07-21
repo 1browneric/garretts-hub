@@ -1273,6 +1273,16 @@ function bind(){
   document.querySelectorAll("[data-putt]").forEach(el => {
     el.onchange = () => commitPutt(+el.dataset.putt, el.value.trim());
   });
+  document.querySelectorAll("#modesel .modebtn").forEach(el => {
+    el.onclick = () => {
+      if (el.dataset.mode === trackMode) return;
+      /* Basic is a strict subset of Advanced, so switching never destroys data —
+         shots already logged stay stored and reappear on switching back. */
+      setCell("tmode", el.dataset.mode);
+      editing = null;
+      render(); syncMeta();
+    };
+  });
   const note = $("#holenote");
   if (note) note.onchange = () => setField(hole, "note", note.value.trim() || null);
   const rn = $("#rnote");
@@ -1282,16 +1292,6 @@ const numOrNull = s => { const v = String(s).trim(); if (v==="") return null; co
 
 document.querySelectorAll(".tab").forEach(b => {
   b.addEventListener("click", () => { tab=b.dataset.tab; editing=null; render(); });
-});
-document.querySelectorAll("#modesel .modebtn").forEach(b => {
-  b.addEventListener("click", () => {
-    if (b.dataset.mode === trackMode) return;
-    /* Basic is a strict subset of Advanced, so switching never destroys data —
-       shots already logged stay stored and reappear on switching back. */
-    setCell("tmode", b.dataset.mode);
-    editing = null;
-    render(); syncMeta();
-  });
 });
 $("#in-course").addEventListener("change", e => { setCell("course", e.target.value.trim()); });
 $("#in-date").addEventListener("change", e => { setCell("rdate", e.target.value); });
