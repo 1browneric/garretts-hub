@@ -30,6 +30,10 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 input,textarea,select{font-family:inherit}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 
+.hubback{display:inline-flex;align-items:center;gap:7px;margin:0 0 12px;padding:8px 14px;border-radius:999px;
+  border:1px solid var(--line);background:rgba(0,0,0,.16);color:var(--sage);text-decoration:none;
+  font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase}
+.hubback:active{color:var(--paper)}
 .masthead{padding:22px 18px 16px;text-align:center;border-bottom:1px solid var(--line)}
 .wordmark{font-family:var(--serif);font-weight:700;font-size:25px;line-height:1.1;letter-spacing:.01em;color:var(--paper);margin:0 0 6px}
 .wordmark em{font-style:italic;color:var(--gold)}
@@ -244,6 +248,7 @@ input,textarea,select{font-family:inherit}
     <button class="tab on" data-tab="hole" role="tab">Hole</button>
     <button class="tab" data-tab="overview" role="tab">Overview</button>
   </nav>
+  <div style="padding:12px 14px 0"><a class="hubback" href="../../">&larr; Hub</a></div>
   <main class="main" id="main"></main>
   <div class="savestat" id="savestat" role="status">Loading</div>
 </div>
