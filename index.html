@@ -405,14 +405,16 @@ body{background:var(--green-deep);font-family:var(--font-body);color:var(--cream
 
   // ---- Rounds tab columns (after the 3 header rows):
   // 0 Date · 1 Course · 2 Par · 3 Gross · 4 +/- · 5 F9 · 6 B9 · 7 FW · 8 FW% ·
-  // 9 GIR · 10 GIR% · 11 Putts · 12-17 SG scratch · 18-23 SG 5hcp · 24-29 SG 9hcp
-  // Garrett's baseline is 9 HCP, so the SG columns read are 24-29.
+  // 9 GIR · 10 GIR% · 11 Putts · 12-17 SG vs 9 HCP · 18 Notes
+  // The Scratch and 5 HCP bands were removed from the sheet on 2026-07-21 — 9 HCP
+  // is the only baseline now — so SG sits at 12-17, where Scratch used to be.
+  // Basic rounds send no SG and leave 12-17 blank; parseRounds yields sg:null.
   function parseRounds(rows){
     var out=[];
     (rows||[]).slice(3).forEach(function(r){
       if(!r || !r[0] || r[3]===''||r[3]==null) return;
       var d=new Date(r[0]); if(isNaN(d)) return;
-      var sg=r.slice(24,30).map(function(v){var n=parseFloat(v);return isNaN(n)?null:n;});
+      var sg=r.slice(12,18).map(function(v){var n=parseFloat(v);return isNaN(n)?null:n;});
       out.push({
         date:d, course:String(r[1]||''), par:+r[2]||0, score:+r[3]||0,
         vp:(r[4]===''||r[4]==null)?null:+r[4], fw:r[7], gir:r[9], putts:r[11],
